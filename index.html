@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSim — Интерактивное резюме-симулятор</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400,500,600,700&family=Fira+Code:wght@400,500&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .font-code { font-family: 'Fira Code', monospace; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Верхняя панель -->
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 bg-indigo-500 rounded-full animate-pulse"></div>
+            <span class="font-bold text-lg tracking-wide text-indigo-400">SkillSim <span class="text-xs text-slate-400 font-normal px-2 py-0.5 bg-slate-900 border border-slate-800 rounded">v1.0 LIVE</span></span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center space-x-2">
+                <span class="text-slate-400">Таймер сессии:</span>
+                <span id="timer" class="font-code font-bold text-indigo-400">02:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контейнер -->
+    <main class="max-w-4xl mx-auto w-full p-6 my-auto">
+
+        <!-- ЭКРАН 1: ВХОД В СИМУЛЯТОР (ВЫБОР СЦЕНАРИЯ) -->
+        <section id="screen-1" class="space-y-8 py-8 transition-all duration-300">
+            <div class="text-center space-y-4">
+                <span class="text-xs uppercase tracking-widest text-indigo-400 font-semibold px-3 py-1 bg-indigo-950/60 border border-indigo-800/50 rounded-full">Конкурсный проект SiteHack</span>
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white">Не читай резюме.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Проверь меня в деле за 120 секунд.</span></h1>
+                <p class="text-slate-400 max-w-xl mx-auto text-sm md:text-base">Запусти интерактивный тест-драйв навыков соискателя вместо чтения шаблонных PDF-файлов и списков технологий.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4 pt-4">
+                <!-- Карточка сценария 1 -->
+                <button onclick="startFlow('qa')" class="group text-left p-6 bg-slate-900 border border-slate-800 hover:border-indigo-500 rounded-2xl transition-all hover:shadow-lg hover:shadow-indigo-500/10 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-code text-indigo-400">Сценарий 01</span>
+                        <span class="text-xs text-slate-500 group-hover:text-indigo-400 transition">Запустить 3 теста →</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-100">Интерактивный тест QA & Инженерии</h3>
+                    <p class="text-xs text-slate-400">Валидация формы, расстановка приоритетов багов и эмуляция сетевых сбоев.</p>
+                </button>
+
+                <!-- Карточка сценария 2 (интерактивная) -->
+                <button onclick="startFlow('ts')" class="group text-left p-6 bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded-2xl transition-all hover:shadow-lg hover:shadow-cyan-500/10 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-code text-cyan-400">Сценарий 02</span>
+                        <span class="text-xs text-slate-500 group-hover:text-cyan-400 transition">Запустить 3 теста →</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-100">Логика структуры данных (TypeScript)</h3>
+                    <p class="text-xs text-slate-400">Инспектор типов, оптимизация ре-рендеров и архитектура стейта.</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= ЦЕПОЧКА СЦЕНАРИЯ 1: QA & ИНЖЕНЕРИЯ ================= -->
+        <div id="flow-qa" class="hidden space-y-6">
+            
+            <!-- QA Задача 1.1 -->
+            <div id="qa-task-1" class="space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="text-xs text-indigo-400 font-code">QA Сценарий · Задача 01/03</span>
+                        <h2 class="text-xl font-bold">Проверь устойчивость маски телефона</h2>
+                    </div>
+                    <button onclick="resetToStart()" class="text-xs text-slate-400 hover:text-white underline">← Назад к выбору</button>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <p class="text-xs text-slate-300">Попробуй стереть или ввести цифры в поле ниже, чтобы протестировать алгоритм:</p>
+                    <div class="space-y-2">
+                        <label class="text-xs font-medium text-slate-400">Поле ввода с авторской маской:</label>
+                        <div class="flex space-x-2">
+                            <input type="text" id="phoneInput" value="+7 (999) 123-45-67" class="bg-slate-950 border border-indigo-500/50 rounded-xl px-4 py-3 text-sm font-code flex-1 focus:outline-none focus:border-indigo-400">
+                            <button onclick="runQaTest1()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 rounded-xl text-sm font-semibold transition">Проверить</button>
+                        </div>
+                    </div>
+                    <div id="qaLogs1" class="hidden space-y-3 pt-4 border-t border-slate-800 animate-fadeIn">
+                        <div class="p-3 bg-slate-950 border border-emerald-500/30 rounded-lg text-emerald-400 text-xs font-code flex justify-between items-center">
+                            <span>✓ Маска удержана. Спецсимволы отфильтрованы, длина строго 11 цифр.</span>
+                            <span class="text-[10px] text-slate-500">0.04ms</span>
+                        </div>
+                        <div class="pt-4 flex justify-end">
+                            <button onclick="switchQaTask(2)" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl text-sm font-semibold transition">К задаче 02/03 (Приоритет багов) →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QA Задача 1.2 -->
+            <div id="qa-task-2" class="hidden space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="text-xs text-indigo-400 font-code">QA Сценарий · Задача 02/03</span>
+                        <h2 class="text-xl font-bold">Сверь приоритеты багов с решением соискателя</h2>
+                    </div>
+                    <span class="text-xs font-code text-emerald-400">Задача 1 пройдена ✓</span>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <p class="text-xs text-slate-300">Нажми на приоритет, который ты бы присвоил дефектам:</p>
+                    
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-medium text-slate-200">Дефект: «Падение оплаты при повторном клике»</span>
+                            <span id="bug1-status" class="text-xs font-code text-slate-500">Выберите приоритет...</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="checkBugPriority(1, 'P0')" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 rounded-lg text-xs font-code transition">P0 (Critical)</button>
+                            <button onclick="checkBugPriority(1, 'P1')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-code transition">P1 (High)</button>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-medium text-slate-200">Дефект: «Опечатка в тексте в футере»</span>
+                            <span id="bug2-status" class="text-xs font-code text-slate-500">Выберите приоритет...</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="checkBugPriority(2, 'P0')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-code transition">P0 (Critical)</button>
+                            <button onclick="checkBugPriority(2, 'P2')" class="px-3 py-1.5 bg-amber-950/80 hover:bg-amber-900 border border-amber-800 text-amber-300 rounded-lg text-xs font-code transition">P2 (Low)</button>
+                        </div>
+                    </div>
+
+                    <div id="qaLogs2" class="hidden pt-4 flex justify-end">
+                        <button onclick="switchQaTask(3)" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl text-sm font-semibold transition">К задаче 03/03 (Эмуляция API) →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QA Задача 1.3 -->
+            <div id="qa-task-3" class="hidden space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="text-xs text-indigo-400 font-code">QA Сценарий · Задача 03/03</span>
+                        <h2 class="text-xl font-bold">Эмуляция сетевого сбоя (Error Handling)</h2>
+                    </div>
+                    <span class="text-xs font-code text-emerald-400">Задачи 1 и 2 пройдены ✓</span>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <p class="text-xs text-slate-300">Нажми на кнопку ниже, чтобы проверить, как код соискателя перехватывает падение сервера:</p>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="triggerApiError(500)" class="px-4 py-2.5 bg-red-600/20 hover:bg-red-600/30 border border-red-500/50 text-red-400 rounded-xl text-xs font-semibold transition">Отправить HTTP 500 (Server Error)</button>
+                        <button onclick="triggerApiError(200)" class="px-4 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/50 text-emerald-400 rounded-xl text-xs font-semibold transition">Отправить HTTP 200 OK</button>
+                    </div>
+
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl font-code text-xs space-y-2 min-h-[90px]">
+                        <div class="text-slate-500">// Консоль перехвата ошибок приложения:</div>
+                        <div id="apiConsoleOutput" class="text-slate-400">Нажмите одну из кнопок выше...</div>
+                    </div>
+
+                    <div id="qaLogs3" class="hidden pt-4 flex justify-end">
+                        <button onclick="showResults()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl text-sm font-semibold transition">Завершить тесты и открыть итоговую карточку →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= ЦЕПОЧКА СЦЕНАРИЯ 2: TYPESCRIPT & АРХИТЕКТУРА ================= -->
+        <div id="flow-ts" class="hidden space-y-6">
+            
+            <!-- TS Задача 2.1 -->
+            <div id="ts-task-1" class="space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="text-xs text-cyan-400 font-code">TS Сценарий · Задача 01/03</span>
+                        <h2 class="text-xl font-bold">Инспектор типов и Type Guards</h2>
+                    </div>
+                    <button onclick="resetToStart()" class="text-xs text-slate-400 hover:text-white underline">← Назад к выбору</button>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <p class="text-xs text-slate-300">Выберите тип входящего параметра для проверки безопасного сужения типов:</p>
+                    <div class="flex space-x-3">
+                        <button onclick="checkTsGuard('string')" class="px-4 py-2 bg-slate-950 border border-cyan-500/40 text-cyan-300 rounded-xl text-xs font-code hover:bg-cyan-950/40 transition">isString(val)</button>
+                        <button onclick="checkTsGuard('number')" class="px-4 py-2 bg-slate-950 border border-cyan-500/40 text-cyan-300 rounded-xl text-xs font-code hover:bg-cyan-950/40 transition">isNumber(val)</button>
+                    </div>
+                    <div id="tsGuardOutput" class="p-4 bg-slate-950 border border-slate-800 rounded-xl font-code text-xs text-slate-400">
+                        Ожидание проверки типа...
+                    </div>
+                    <div id="tsLogs1" class="hidden pt-4 flex justify-end">
+                        <button onclick="switchTsTask(2)" class="bg-cyan-600 hover:bg-cyan-500 text-white px-6 py-3 rounded-xl text-sm font-semibold transition">К задаче 02/03 (Оптимизация ре-рендеров) →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TS Задача 2.2 -->
+            <div id="ts-task-2" class="hidden space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="text-xs text-cyan-400 font-code">TS Сценарий · Задача 02/03</span>
+                        <h2 class="text-xl font-bold">Тест оптимизации ре-рендеров (useMemo)</h2>
+                    </div>
+                    <span class="text-xs text-cyan-400 font-code">Задача 1 пройдена ✓</span>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <p class="text-xs text-slate-300">Нажми на кнопку запуска стресс-теста перерисовки компонентов таблицы:</p>
+                    <button onclick="runStressTest()" class="px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-semibold transition">Запустить 10,000 вычислений стейта</button>
+                    
+                    <div id="stressOutput" class="p-4 bg-slate-950 border border-slate-800 rounded-xl font-code text-xs text-slate-400">
+                        Метрики не запущены...
+                    </div>
+                    <div id="tsLogs2" class="hidden pt-4 flex justify-end">
+                        <button onclick="switchTsTask(3)" class="bg-cyan-600 hover:bg-cyan-500 text-white px-6 py-3 rounded-xl text-sm font-semibold transition">К задаче 03/03 (Архитектура стейта) →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TS Задача 2.3 -->
+            <div id="ts-task-3" class="hidden space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="text-xs text-cyan-400 font-code">TS Сценарий · Задача 03/03</span>
+                        <h2 class="text-xl font-bold">Изоляция стейта и модульность</h2>
+                    </div>
+                    <span class="text-xs text-cyan-400 font-code">Задачи 1 и 2 пройдены ✓</span>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <p class="text-xs text-slate-300">Проверка предсказуемости мутаций в архитектурном хранилище:</p>
+                    <div class="p-4 bg-slate-950 border border-cyan-500/30 rounded-xl font-code text-xs text-cyan-300">
+                        store.dispatch({ type: 'UPDATE_CONFIG', payload: { secure: true } }); // State isolated & pure
+                    </div>
+                    <div class="pt-4 flex justify-end">
+                        <button onclick="showResults()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl text-sm font-semibold transition">Завершить тесты и открыть итоговую карточку →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= ЭКРАН РЕЗУЛЬТАТОВ ================= -->
+        <section id="results" class="hidden space-y-6 transition-all duration-300">
+            <div class="text-center space-y-2">
+                <span class="text-xs font-code text-emerald-400">ВСЕ ИНТЕРАКТИВНЫЕ ТЕСТЫ УСПЕШНО ПРОЙДЕНЫ</span>
+                <h2 class="text-3xl font-bold">Карточка инженерного мышления</h2>
+                <p class="text-xs text-slate-400">Объективные результаты проверки кандидата за 120 секунд</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Метрики качества решения</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1 font-code">
+                                <span>Чистота архитектуры</span>
+                                <span class="text-indigo-400">96%</span>
+                            </div>
+                            <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+                                <div class="bg-indigo-500 h-full w-[96%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1 font-code">
+                                <span>Устойчивость кода</span>
+                                <span class="text-emerald-400">100%</span>
+                            </div>
+                            <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+                                <div class="bg-emerald-500 h-full w-[100%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between space-y-4">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Быстрая связь</h4>
+                    <p class="text-xs text-slate-300">Кандидат подтвердил готовность к техническому интервью и код-ревью.</p>
+                    <div class="flex flex-col space-y-2">
+                        <button onclick="alert('Приглашение отправлено! Соискатель на связи.')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl text-sm font-semibold transition text-center">Пригласить на собеседование</button>
+                        <button onclick="resetToStart()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl text-xs transition text-center">Пройти тест заново</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-800 text-center py-4 text-xs text-slate-500">
+        SkillSim © 2026 · Проект для конкурса «SiteHack — взлом шаблонов»
+    </footer>
+
+    <script>
+        function hideAll() {
+            document.getElementById('screen-1').classList.add('hidden');
+            document.getElementById('flow-qa').classList.add('hidden');
+            document.getElementById('flow-ts').classList.add('hidden');
+            document.getElementById('results').classList.add('hidden');
+            
+            document.getElementById('qa-task-1').classList.add('hidden');
+            document.getElementById('qa-task-2').classList.add('hidden');
+            document.getElementById('qa-task-3').classList.add('hidden');
+            
+            document.getElementById('ts-task-1').classList.add('hidden');
+            document.getElementById('ts-task-2').classList.add('hidden');
+            document.getElementById('ts-task-3').classList.add('hidden');
+        }
+
+        function startFlow(type) {
+            hideAll();
+            if(type === 'qa') {
+                document.getElementById('flow-qa').classList.remove('hidden');
+                document.getElementById('qa-task-1').classList.remove('hidden');
+            } else if(type === 'ts') {
+                document.getElementById('flow-ts').classList.remove('hidden');
+                document.getElementById('ts-task-1').classList.remove('hidden');
+            }
+        }
+
+        function switchQaTask(num) {
+            document.getElementById('qa-task-1').classList.add('hidden');
+            document.getElementById('qa-task-2').classList.add('hidden');
+            document.getElementById('qa-task-3').classList.add('hidden');
+            document.getElementById('qa-task-' + num).classList.remove('hidden');
+        }
+
+        function switchTsTask(num) {
+            document.getElementById('ts-task-1').classList.add('hidden');
+            document.getElementById('ts-task-2').classList.add('hidden');
+            document.getElementById('ts-task-3').classList.add('hidden');
+            document.getElementById('ts-task-' + num).classList.remove('hidden');
+        }
+
+        function showResults() {
+            hideAll();
+            document.getElementById('results').classList.remove('hidden');
+        }
+
+        function resetToStart() {
+            hideAll();
+            document.getElementById('screen-1').classList.remove('hidden');
+            document.getElementById('qaLogs1').classList.add('hidden');
+            checkedBugs = 0;
+        }
+
+        function runQaTest1() {
+            document.getElementById('qaLogs1').classList.remove('hidden');
+        }
+
+        // Логика приоритетов багов (QA Задача 2)
+        let checkedBugs = 0;
+        function checkBugPriority(bugNum, val) {
+            const statusElem = document.getElementById('bug' + bugNum + '-status');
+            if(bugNum === 1 && val === 'P0') {
+                statusElem.innerText = '✓ Совпадает с кандидатом (P0 Critical)';
+                statusElem.className = 'text-xs font-code text-emerald-400';
+            } else if(bugNum === 2 && val === 'P2') {
+                statusElem.innerText = '✓ Совпадает с кандидатом (P2 Low)';
+                statusElem.className = 'text-xs font-code text-emerald-400';
+            } else {
+                statusElem.innerText = '⚠️ Приоритет отличается от мнения кандидата';
+                statusElem.className = 'text-xs font-code text-amber-400';
+            }
+            checkedBugs++;
+            if(checkedBugs >= 1) {
+                document.getElementById('qaLogs2').classList.remove('hidden');
+            }
+        }
+
+        // Логика эмулятора API (QA Задача 3)
+        function triggerApiError(code) {
+            const out = document.getElementById('apiConsoleOutput');
+            if(code === 500) {
+                out.innerHTML = '<span class="text-red-400">[HTTP 500 Internal Error] Перехвачено через try/catch.</span><br><span class="text-emerald-400">→ UI Fallback: "Сервер временно недоступен. Данные сохранены."</span>';
+            } else {
+                out.innerHTML = '<span class="text-emerald-400">[HTTP 200 OK] Успешный ответ сервера (JSON парсинг выполнен).</span>';
+            }
+            document.getElementById('qaLogs3').classList.remove('hidden');
+        }
+
+        // Логика TS задачи 1 (Type Guards)
+        function checkTsGuard(type) {
+            const out = document.getElementById('tsGuardOutput');
+            if(type === 'string') {
+                out.innerHTML = '<span class="text-emerald-400">✓ Тип сужен до string. Строковые методы доступны безопасно (toUpperCase).</span>';
+            } else {
+                out.innerHTML = '<span class="text-emerald-400">✓ Тип сужен до number. Математические операции разрешены.</span>';
+            }
+            document.getElementById('tsLogs1').classList.remove('hidden');
+        }
+
+        // Логика TS задачи 2 (Стресс-тест ре-рендеров)
+        function runStressTest() {
+            const out = document.getElementById('stressOutput');
+            out.innerHTML = '<span class="text-cyan-300">Вычисление... 10,000 итераций мемоизации...</span>';
+            setTimeout(() => {
+                out.innerHTML = '<span class="text-emerald-400">✓ Рендер оптимизирован через useMemo. Время выполнения: <strong>0.8ms</strong> (Без мемоизации: 34.2ms).</span>';
+                document.getElementById('tsLogs2').classList.remove('hidden');
+            }, 600);
+        }
+
+        // Маска телефона
+        const phoneInput = document.getElementById('phoneInput');
+        phoneInput.addEventListener('input', (e) => {
+            let matrix = "+7 (___) ___-__-__",
+                i = 0,
+                def = matrix.replace(/\D/g, ""),
+                val = e.target.value.replace(/\D/g, "");
+            
+            if (def.length >= val.length) val = def;
+            
+            e.target.value = matrix.replace(/./g, function(a) {
+                return /[_\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? "" : a;
+            });
+        });
+
+        // Таймер
+        let timeLeft = 120;
+        setInterval(() => {
+            if(timeLeft > 0) {
+                timeLeft--;
+                let m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                let s = (timeLeft % 60).toString().padStart(2, '0');
+                document.getElementById('timer').innerText = `${m}:${s}`;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
