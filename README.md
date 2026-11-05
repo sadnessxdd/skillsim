@@ -13,3 +13,6 @@ PDF-резюме и сухие списки технологий устарел�
 ### 🛠 Технологии
 - HTML5, Vanilla JavaScript
 - Tailwind CSS (для современного и быстрого UI)
+
+### Перейти на прототип
+- https://sadnessxdd.github.io/skillsim/
