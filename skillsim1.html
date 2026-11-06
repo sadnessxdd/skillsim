@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillSim — интерактивный тест-драйв кандидата</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+body{font-family:'Inter',sans-serif}.font-code{font-family:'JetBrains Mono',monospace}
+.btn{padding:.55rem 1rem;border-radius:.5rem;font-size:.875rem;font-weight:600;background:#365799;color:#fff;transition:background .15s}
+.btn:hover{background:#2c477f}
+.opt{padding:.5rem .9rem;border-radius:.5rem;font-size:.875rem;background:#fff;border:1px solid #cbd5e1;color:#1e293b;transition:all .15s;text-align:left}
+.opt:hover{border-color:#365799;background:#eef2fa}
+.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+.bad{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+.info{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+button:focus-visible,input:focus-visible{outline:3px solid #365799;outline-offset:2px}
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<header class="bg-[#365799] text-white sticky top-0 z-50 px-6 py-4 flex justify-between items-center shadow-sm">
+  <div class="flex items-center gap-3"><div class="w-3 h-3 bg-white rounded-sm"></div><span class="font-bold text-lg">SkillSim</span><span class="text-sm text-white/80 hidden sm:inline">Конкурсный проект SiteHack</span></div>
+  <div id="timerBox" class="hidden items-center gap-3 text-sm"><span class="text-white/90">Осталось</span><span id="timer" class="font-code font-bold bg-white/15 border border-white/30 px-3 py-1 rounded-md">02:00</span></div>
+</header>
+
+<main class="max-w-4xl mx-auto w-full p-6 my-auto">
+  <section id="start" class="space-y-8 py-4">
+    <div class="max-w-2xl space-y-3">
+      <h1 class="text-4xl font-bold text-slate-900 tracking-tight">Не читайте резюме. Проверьте кандидата в деле за 120 секунд</h1>
+      <p class="text-base text-slate-600 leading-relaxed">Это интерактивное резюме. Запускайте код кандидата, пробуйте его сломать и сравнивайте со своими ожиданиями.</p>
+    </div>
+    <div class="bg-white border border-slate-200 rounded-xl p-5 flex items-center gap-4 shadow-sm"><div class="w-12 h-12 rounded-full bg-[#365799] text-white flex items-center justify-center font-bold">ИФ</div><div><p class="font-bold text-slate-900">Имя Фамилия</p><p class="text-sm text-slate-600">Frontend-разработчик · QA · TypeScript</p></div></div>
+    <div class="grid md:grid-cols-2 gap-5">
+      <button onclick="begin('qa')" class="text-left p-6 bg-white border border-slate-200 border-l-4 border-l-[#365799] rounded-r-xl hover:shadow-md transition space-y-3">
+        <span class="font-code text-sm text-[#365799]">qa_module.js</span>
+        <h3 class="font-bold text-lg text-slate-900">Как кандидат проверяет формы и ловит ошибки</h3>
+        <p class="text-sm text-slate-600">Маска телефона, приоритеты багов, перехват сетевой ошибки. Вы пробуете, кандидат показывает решение.</p>
+        <span class="btn inline-block">Запустить кейсы, 3 шага</span>
+      </button>
+      <button onclick="begin('ts')" class="text-left p-6 bg-white border border-slate-200 border-l-4 border-l-[#365799] rounded-r-xl hover:shadow-md transition space-y-3">
+        <span class="font-code text-sm text-[#365799]">ts_architecture.ts</span>
+        <h3 class="font-bold text-lg text-slate-900">Как кандидат пишет типы и держит стейт чистым</h3>
+        <p class="text-sm text-slate-600">Сужение типов, измеримый бенчмарк мемоизации, неизменяемый стейт.</p>
+        <span class="btn inline-block">Начать, 3 задачи</span>
+      </button>
+    </div>
+  </section>
+
+  <section id="run" class="hidden space-y-4">
+    <div class="flex justify-between items-center border-b-2 border-[#365799] pb-3">
+      <span id="label" class="text-sm font-bold text-[#365799]"></span>
+      <button onclick="home()" class="text-sm text-slate-600 hover:text-[#365799] underline">К выбору сценария</button>
+    </div>
+    <div class="bg-white border border-slate-200 rounded-xl p-6 space-y-4 shadow-sm">
+      <h2 id="title" class="text-xl font-bold text-slate-900"></h2>
+      <p id="hint" class="text-sm text-slate-600"></p>
+      <div id="body" class="space-y-4"></div>
+      <div class="flex justify-end"><button id="next" onclick="next()" class="btn hidden"></button></div>
+    </div>
+  </section>
+
+  <section id="end" class="hidden space-y-6">
+    <div class="border-b-2 border-[#365799] pb-4">
+      <span id="endTag" class="text-sm font-bold text-[#365799]"></span>
+      <h2 class="text-2xl font-bold text-slate-900 mt-1">Итог проверки</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-5">
+      <div id="bars" class="bg-white border border-slate-200 rounded-xl p-6 space-y-5 shadow-sm"></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-6 flex flex-col justify-between gap-4 shadow-sm">
+        <p id="verdict" class="text-sm text-slate-700 leading-relaxed"></p>
+        <div class="space-y-2">
+          <button onclick="invite()" class="btn w-full py-3">Связаться с кандидатом</button>
+          <div id="inv"></div>
+          <button onclick="home()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 py-2 rounded-lg text-sm border border-slate-200 font-medium">Пройти заново</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="border-t border-slate-200 text-center py-4 text-sm text-slate-600 bg-white">SkillSim © 2026 · Проект для конкурса «SiteHack»</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const fb=(k,t)=>`<div class="${k} p-3 rounded-lg text-sm">${t}</div>`;
+const P=['P0 (критичный)','P1 (высокий)','P2 (низкий)'];
+const T={
+qa:[
+{tag:'Валидация',h:'Сломайте маску телефона кандидата',p:'Введите буквы, лишние цифры, номер с 8 в начале. Затем нажмите «Проверить».',code:'digits = value.replace(/\\D/g, "").slice(0, 10)',
+ html:()=>`<div class="flex gap-2 max-w-md"><input id="ph" class="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm font-code" placeholder="+7 (900) 123-45-67" inputmode="tel"><button class="btn" onclick="chkMask()">Проверить</button></div><div id="mfb"></div>`,
+ init:()=>$('ph').addEventListener('input',e=>e.target.value=fmt(e.target.value))},
+{tag:'Приоритеты',h:'Расставьте приоритеты дефектов',p:'Сначала выберите свой уровень. Затем вы увидите решение кандидата и его довод.',
+ qs:[{q:'Кейс A: ошибка при повторной оплате',o:P,c:0,why:'Затронуты деньги пользователя, чинить нужно немедленно.'},
+     {q:'Кейс B: опечатка в тексте футера',o:P,c:2,why:'Работу сайта не блокирует, исправляется планово.'}]},
+{tag:'Обработка ошибок',h:'Сбой сервера глазами пользователя',p:'Запустите оба ответа сервера. Запрос выполняется настоящим кодом кандидата.',code:'try { await api() } catch (e) { showFallback(e) }',
+ html:()=>`<div class="flex gap-2"><button class="opt font-code" onclick="api(500)">HTTP 500</button><button class="opt font-code" onclick="api(200)">HTTP 200</button></div><div id="afb" class="space-y-2"></div>`}
+],
+ts:[
+{tag:'Type Guards',h:'Безопасное сужение типа',p:'Для val: string | number нужен вызов val.toUpperCase(). Какую проверку выбрали бы вы?',
+ qs:[{q:'Ваш выбор',o:['typeof val === "string"','typeof val === "number"','val instanceof String'],c:0,why:'typeof сужает тип до string, и toUpperCase() безопасен. instanceof String не работает с примитивами.'}]},
+{tag:'Мемоизация',h:'Бенчмарк кода кандидата',p:'10 000 вызовов тяжёлой функции без кэша и с кэшем на Map. Время измеряется в вашем браузере.',code:'if (!cache.has(k)) cache.set(k, heavy(k))',
+ html:()=>`<button class="btn" onclick="bench()">Запустить бенчмарк</button><div id="bfb"></div>`},
+{tag:'Архитектура',h:'Изоляция состояния',p:'Какую реализацию UPDATE_CONFIG вы одобрили бы на код-ревью?',
+ qs:[{q:'Ваш выбор',o:['state.config.secure = true; return state;','return {...state, config:{...state.config, secure:true}};','return Object.assign(state, {config:{secure:true}});'],c:1,why:'Новый объект без мутации исходного стейта: изменение видно, остальные поля не теряются.'}]}
+]};
+function fmt(v){let d=v.replace(/\D/g,'');if(d[0]==='7'||d[0]==='8')d=d.slice(1);d=d.slice(0,10);let o='+7';if(d.length)o+=' ('+d.slice(0,3);if(d.length>3)o+=') '+d.slice(3,6);if(d.length>6)o+='-'+d.slice(6,8);if(d.length>8)o+='-'+d.slice(8,10);return o}
+let S,tm,left;
+const esc=s=>s.replace(/</g,'&lt;');
+function show(id){['start','run','end'].forEach(x=>$(x).classList.toggle('hidden',x!==id));$('timerBox').classList.toggle('hidden',id!=='run');$('timerBox').classList.toggle('flex',id==='run')}
+function begin(sc){clearInterval(tm);const ts=T[sc];S={sc,i:0,done:0,r:{},a:{},m:0,pass:0,qn:ts.reduce((n,t)=>n+(t.qs?t.qs.length:0),0),cn:ts.filter(t=>!t.qs).length,t0:Date.now()};left=120;paint();tm=setInterval(()=>{left--;paint();if(left<=0)finish(true)},1000);show('run');step()}
+function paint(){$('timer').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');$('timer').style.background=left<=20?'#b91c1c':''}
+function step(){const t=T[S.sc][S.i];$('label').textContent=`Шаг ${S.i+1} из 3 · ${t.tag}`;$('title').textContent=t.h;$('hint').textContent=t.p;
+ const code=t.code?`<pre class="font-code text-sm bg-[#365799] text-white rounded-lg p-4 overflow-x-auto">// Код кандидата\n${esc(t.code)}</pre>`:'';
+ $('body').innerHTML=code+(t.qs?t.qs.map((q,qi)=>`<div class="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-3"><p class="font-semibold text-sm">${q.q}</p><div class="flex gap-2 flex-wrap">${q.o.map((o,oi)=>`<button class="opt font-code" onclick="pick(${qi},${oi})">${esc(o)}</button>`).join('')}</div><div id="fb${qi}"></div></div>`).join(''):t.html());
+ $('next').classList.add('hidden');$('next').textContent=S.i==2?'Открыть итог':'Следующий шаг';t.init&&t.init()}
+function ready(){if(!S.r[S.i]){S.r[S.i]=1;S.done++}$('next').classList.remove('hidden')}
+function point(){const k='p'+S.i;if(!S.a[k]){S.a[k]=1;S.pass++}}
+function pick(qi,oi){const t=T[S.sc][S.i],q=t.qs[qi],k=S.i+'.'+qi,hit=oi===q.c;
+ if(S.a[k]===undefined){S.a[k]=1;if(hit)S.m++}
+ $('fb'+qi).innerHTML=hit?fb('ok','Совпадает с решением кандидата. '+q.why):fb('info',`Отличается. Кандидат выбрал: <b>${esc(q.o[q.c])}</b>. ${q.why}`);
+ if(t.qs.every((_,j)=>S.a[S.i+'.'+j]!==undefined))ready()}
+function chkMask(){const v=$('ph').value,n=v.replace(/\D/g,'').length-(v?1:0);
+ if(n>=10){$('mfb').innerHTML=fb('ok','Маска выдержала: буквы и лишние символы отфильтрованы, цифр ровно 10.');point();ready()}
+ else $('mfb').innerHTML=fb('info',`Номер неполный: введено ${Math.max(n,0)} из 10 цифр. Введите номер целиком и добавьте буквы.`)}
+const fake=c=>new Promise((ok,no)=>setTimeout(()=>c>=500?no(new Error('HTTP '+c)):ok({status:c}),300));
+async function api(c){S.api=S.api||{};S.api[c]=1;const o=$('afb');try{const r=await fake(c);o.innerHTML=fb('ok',`HTTP ${r.status}: данные получены, интерфейс обновлён.`)}catch(e){o.innerHTML=fb('ok',`${e.message} перехвачен в catch. Пользователь видит: «Сервер недоступен, данные сохранены. Повторим через 5 секунд».`)}
+ if(S.api[200]&&S.api[500]){point();ready()}}
+function bench(){const heavy=n=>{let s=0;for(let i=0;i<5000;i++)s+=Math.sqrt(i*n);return s};
+ const a=performance.now();for(let i=0;i<10000;i++)heavy(i%50);const t1=performance.now()-a;
+ const m=new Map(),b=performance.now();for(let i=0;i<10000;i++){const k=i%50;if(!m.has(k))m.set(k,heavy(k))}const t2=performance.now()-b;
+ $('bfb').innerHTML=fb('ok',`Без кэша: <b>${t1.toFixed(1)} мс</b>. С мемоизацией: <b>${t2.toFixed(2)} мс</b>. Быстрее в ${Math.round(t1/Math.max(t2,.01))} раз.`);point();ready()}
+function next(){S.i==2?finish():(S.i++,step())}
+function home(){clearInterval(tm);show('start')}
+function finish(timeout){clearInterval(tm);const p1=Math.round(S.m/S.qn*100),p2=Math.round(S.pass/S.cn*100),sec=Math.min(120,Math.round((Date.now()-S.t0)/1000));
+ const col=p=>p>=70?'#15803d':p>=40?'#b45309':'#b91c1c';
+ const bar=(n,v,p)=>`<div><div class="flex justify-between text-sm mb-1.5 font-semibold"><span>${n}</span><span class="font-code" style="color:${col(p)}">${v}</span></div><div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-slate-200"><div style="width:${p}%;background:${col(p)}" class="h-full"></div></div></div>`;
+ $('bars').innerHTML=bar('Совпало с подходом кандидата',`${S.m} из ${S.qn}`,p1)+bar('Код кандидата выдержал проверки',`${S.pass} из ${S.cn}`,p2)+`<p class="text-sm text-slate-600 font-code">Просмотрено шагов: ${S.done} из 3 · ${sec} с из 120</p>`;
+ $('endTag').textContent=timeout?'Время вышло':'Проверка завершена';
+ $('verdict').textContent=p1>=70&&p2>=70?'Подход кандидата совпадает с вашими ожиданиями, а его код выдержал проверки. Есть что обсудить на интервью.':p2>=70?'Код кандидата надёжен, но часть решений отличается от ваших. Спросите на интервью, почему он выбрал свой путь.':'Часть проверок не пройдена или не запущена. Пройдите сценарий до конца, чтобы оценить кандидата.';
+ $('inv').innerHTML='';show('end')}
+function invite(){$('inv').innerHTML=fb('ok','Демо: в рабочей версии откроется письмо кандидату с вашим результатом.')}
+</script>
+</body>
+</html>
